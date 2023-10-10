@@ -10,25 +10,25 @@ import { useCallback, useState } from "react";
 import React from "react";
 
 const defaultCenter = {
-  lat: -3.745,
-  lng: -38.523,
+  lat: 42.708678,
+  lng: 19.37439
 };
 
-const locations1 = [
-  { id: 1, lat: -31.56391, lng: 147.154312, name: "Golden Pines Meadow" },
-  { id: 2, lat: -33.718234, lng: 150.363181, name: "Golden Cove" },
-  { id: 3, lat: -33.727111, lng: 150.371124, name: "Golden Falls" },
-  { id: 4, lat: -33.848588, lng: 151.209834, name: "Mystic Haven" },
-  { id: 5, lat: -33.851702, lng: 151.216968, name: "Silver Moon Ridge" },
-  { id: 6, lat: -34.671264, lng: 150.863657, name: "Emerald Isle Bay" },
-  { id: 7, lat: -35.304724, lng: 148.662905, name: "Sunflower Valley" },
-  { id: 8, lat: -36.817685, lng: 175.699196, name: "Enchanted Woods Hollow" },
-  { id: 9, lat: -36.828611, lng: 175.790222, name: "Starlight Oasis" },
-  { id: 10, lat: -37.75, lng: 145.116667, name: "Golden Sands Beach" },
-  { id: 11, lat: -37.759859, lng: 145.128708, name: "Willowbrook Glen" },
-  { id: 12, lat: -37.765015, lng: 145.133858, name: "Aurora Peaks" },
-  { id: 13, lat: -37.770104, lng: 145.143299, name: "Tranquil Waterside Retreat" },
-  { id: 14, lat: -37.7737, lng: 145.145187, name: "Wildflower Meadowlands" },
+let locations1 = [
+  { id: 1, lat: 42.442575, lng: 19.262203, name: "Podgorica University" },
+  { id: 2, lat: 42.441499, lng: 19.265312, name: "Podgorica City Library" },
+  { id: 3, lat: 42.445785, lng: 19.266962, name: "Royal Montenegro Museum" },
+  { id: 4, lat: 42.443277, lng: 19.258827, name: "Podgorica Central Hospital" },
+  { id: 5, lat: 42.439922, lng: 19.262976, name: "National Theater of Montenegro" },
+  { id: 6, lat: 42.437849, lng: 19.268731, name: "Podgorica Art Gallery" },
+  { id: 7, lat: 42.444512, lng: 19.271454, name: "City Hall of Podgorica" },
+  { id: 8, lat: 42.442079, lng: 19.273512, name: "Podgorica Cultural Center" },
+  { id: 9, lat: 42.440301, lng: 19.259735, name: "Montenegro Sports Arena" },
+  { id: 10, lat: 42.446859, lng: 19.269053, name: "Montenegro Business Hub" },
+  { id: 11, lat: 42.438759, lng: 19.264708, name: "Podgorica Science Center" },
+  { id: 12, lat: 42.445015, lng: 19.253858, name: "Podgorica Children's Park" },
+  { id: 13, lat: 42.447604, lng: 19.256299, name: "Montenegro History Archive" },
+  { id: 14, lat: 42.440270, lng: 19.267587, name: "Podgorica Contemporary Art Museum" },
 ];
 function MapLocator() {
   const { isLoaded } = useJsApiLoader({
@@ -42,6 +42,7 @@ function MapLocator() {
   const [customAddress, setCustomAddress] = useState<string>(""); // State for custom address input
   const [geocoder, setGeocoder] = useState<google.maps.Geocoder | null>(null); // Geocoder instance
   const [customMarker, setCustomMarker] = useState<google.maps.Marker | null>(null); // Custom marker
+  const [filteredLocations, setFilteredLocations] = useState(locations1);
 
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map); // Store the map instance
@@ -70,6 +71,7 @@ function MapLocator() {
       const filtered = locations1.filter((loc) =>
         loc.name.toLowerCase().includes(filter.toLowerCase()),
       );
+      setFilteredLocations(filtered);
 
       if (filtered.length === 0) {
         setSearchError("No matching results found.");
@@ -77,9 +79,19 @@ function MapLocator() {
         setSearchError(null);
 
         // If there's a matching result, zoom to it
-        if (map && filtered[0]) {
-          map.panTo({ lat: filtered[0].lat, lng: filtered[0].lng });
-          map.setZoom(15); // Adjust the zoom level as needed
+        if (map) {
+          if (filtered.length === 1) {
+            // If there's a single matching result, pan and zoom to it
+            map.panTo({ lat: filtered[0].lat, lng: filtered[0].lng });
+            map.setZoom(15); // Adjust the zoom level as needed
+        } else {
+            // If there are multiple matches, adjust the viewport to encompass all of them
+            const bounds = new window.google.maps.LatLngBounds();
+            filtered.forEach((loc) => {
+                bounds.extend({ lat: loc.lat, lng: loc.lng });
+            });
+            map.fitBounds(bounds);
+        }
         }
       }
 
@@ -95,6 +107,7 @@ function MapLocator() {
     setFilter("");
     setSearchError(null);
     setActiveMarker(null);
+    setFilteredLocations(locations1);
 
     // Reset the map's center and zoom to fit all markers
     if (map) {
@@ -159,7 +172,7 @@ function MapLocator() {
         <MarkerClusterer options={{ minimumClusterSize: 2, enableRetinaIcons: true }}>
           {(clusterer) => (
             <div>
-              {locations1.map((loc) => (
+              {filteredLocations.map((loc) => (
                 <MarkerF
                   key={loc.id}
                   position={{ lat: loc.lat, lng: loc.lng }}
