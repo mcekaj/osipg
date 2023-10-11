@@ -1,4 +1,10 @@
+import AddMapLocator from "@/components/Organisms/MapLocator/AddMapLocator";
+
 const TestRoute = () => {
-  return <div>Test Route</div>;
+  return (
+    <div>
+      <AddMapLocator />
+    </div>
+  );
 };
 export default TestRoute;
