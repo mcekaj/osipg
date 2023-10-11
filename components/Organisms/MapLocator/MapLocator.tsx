@@ -1,4 +1,7 @@
 "use client";
+import AppButton from "@/components/Atoms/AppButton/AppButton";
+import AppInput from "@/components/Atoms/AppInput/AppInput";
+import AppSelect from "@/components/Atoms/AppSelect/AppSelect";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -8,11 +11,6 @@ import {
 } from "@react-google-maps/api";
 import { useCallback, useState } from "react";
 import React from "react";
-
-const defaultCenter = {
-  lat: 42.708678,
-  lng: 19.37439
-};
 
 let locations1 = [
   { id: 1, lat: 42.442575, lng: 19.262203, name: "Podgorica University" },
@@ -28,7 +26,7 @@ let locations1 = [
   { id: 11, lat: 42.438759, lng: 19.264708, name: "Podgorica Science Center" },
   { id: 12, lat: 42.445015, lng: 19.253858, name: "Podgorica Children's Park" },
   { id: 13, lat: 42.447604, lng: 19.256299, name: "Montenegro History Archive" },
-  { id: 14, lat: 42.440270, lng: 19.267587, name: "Podgorica Contemporary Art Museum" },
+  { id: 14, lat: 42.44027, lng: 19.267587, name: "Podgorica Contemporary Art Museum" },
 ];
 function MapLocator() {
   const { isLoaded } = useJsApiLoader({
@@ -84,14 +82,14 @@ function MapLocator() {
             // If there's a single matching result, pan and zoom to it
             map.panTo({ lat: filtered[0].lat, lng: filtered[0].lng });
             map.setZoom(15); // Adjust the zoom level as needed
-        } else {
+          } else {
             // If there are multiple matches, adjust the viewport to encompass all of them
             const bounds = new window.google.maps.LatLngBounds();
             filtered.forEach((loc) => {
-                bounds.extend({ lat: loc.lat, lng: loc.lng });
+              bounds.extend({ lat: loc.lat, lng: loc.lng });
             });
             map.fitBounds(bounds);
-        }
+          }
         }
       }
 
@@ -153,22 +151,35 @@ function MapLocator() {
 
   return isLoaded ? (
     <>
-      <input placeholder="Name" value={filter} onChange={(e) => setFilter(e.target.value)} />
-      <input
-        placeholder="Address"
-        value={customAddress}
-        onChange={(e) => setCustomAddress(e.target.value)}
-      />
-      <button onClick={handleSearch}>Search</button>
-      <button onClick={handleClearFilters}>Clear filters</button>
-      <button onClick={handleCustomAddressSearch}>Search Custom Address</button>
+      <div className="grid lg:grid-cols-4 gap-5 py-3 w-100">
+        <AppInput
+          placeholder="Name"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          name="Name"
+        />
+        <AppInput
+          name="address"
+          value={customAddress}
+          onChange={(e) => setCustomAddress(e.target.value)}
+          placeholder="Address"
+        />
+        <AppSelect
+          name="First select"
+          options={[{ title: "First", value: "first" }]}
+          selectPlaceholderTitle="First select"
+        />
+        <div className="flex gap-3">
+          <AppButton variant="primary" onClick={handleSearch} fullWidth>
+            Search
+          </AppButton>
+          <AppButton variant="outlined" onClick={handleClearFilters} fullWidth>
+            Clear
+          </AppButton>
+        </div>
+      </div>
       {searchError && <p>{searchError}</p>}
-      <GoogleMap
-        center={defaultCenter}
-        zoom={10}
-        onLoad={onLoad}
-        mapContainerStyle={{ width: 500, height: 500 }}
-      >
+      <GoogleMap zoom={10} onLoad={onLoad} mapContainerStyle={{ width: "100%", height: 500 }}>
         <MarkerClusterer options={{ minimumClusterSize: 2, enableRetinaIcons: true }}>
           {(clusterer) => (
             <div>

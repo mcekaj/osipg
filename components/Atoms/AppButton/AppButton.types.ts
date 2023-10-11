@@ -1,14 +1,6 @@
 import { ReactNode } from "react";
 
-export type AppButtonVariants =
-  | "default"
-  | "alternative"
-  | "dark"
-  | "light"
-  | "green"
-  | "red"
-  | "yellow"
-  | "purple";
+export type AppButtonVariants = "primary" | "outlined";
 
 export interface AppButtonProps {
   children: ReactNode;
@@ -17,4 +9,5 @@ export interface AppButtonProps {
   className?: string;
   variant?: AppButtonVariants;
   disabled?: boolean;
+  fullWidth?: boolean;
 }
