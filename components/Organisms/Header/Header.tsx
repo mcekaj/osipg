@@ -36,15 +36,14 @@ const Header = () => {
         >
           <ul className="flex flex-col p-4 lg:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 lg:flex-row lg:space-x-8 lg:mt-0 lg:border-0 lg:bg-white dark:bg-gray-800 lg:dark:bg-gray-900 dark:border-gray-700">
             {routes.map((route) => (
-              <>
-                <li
-                  className={`block py-2 lg:pl-3 pr-4 hover:text-blue-700 lg:p-0 ${
-                    isActiveRoute(route.path) ? "text-blue-800 font-bold" : ""
-                  }`}
-                >
-                  <Link href={route.path}>{route.name}</Link>
-                </li>
-              </>
+              <li
+                key={route.path}
+                className={`block py-2 lg:pl-3 pr-4 hover:text-blue-700 lg:p-0 ${
+                  isActiveRoute(route.path) ? "text-blue-800 font-bold" : ""
+                }`}
+              >
+                <Link href={route.path}>{route.name}</Link>
+              </li>
             ))}
             <Link href="/" className="lg:hidden">
               <AppButton>Prijavi se</AppButton>
