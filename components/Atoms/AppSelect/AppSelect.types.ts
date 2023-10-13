@@ -1,7 +1,7 @@
 import { SelectHTMLAttributes } from "react";
 
 interface AppSelectOptionProps {
-  value: string;
+  value: number;
   title: string;
 }
 export interface AppSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {

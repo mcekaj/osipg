@@ -13,3 +13,9 @@ export const getLocation = async (id?: number) => {
   );
   return data;
 };
+export const getLocationByCategoryId = async (categoryId?: number) => {
+  const data: Location[] = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}locations?categoryId=${categoryId}`,
+  ).then((res) => res.json());
+  return data;
+};
