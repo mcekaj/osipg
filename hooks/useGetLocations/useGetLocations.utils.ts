@@ -1,4 +1,4 @@
-import { Location } from "@/components/Organisms/MapLocator/MapLocator.types";
+import { Location } from "./useGetLocations.types";
 
 export const getLocations = async () => {
   const data: Location[] = await fetch(`${process.env.NEXT_PUBLIC_URL}locations`).then((res) =>

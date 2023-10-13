@@ -12,10 +12,11 @@ import {
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import React from "react";
-import { Location } from "./MapLocator.types";
 import Link from "next/link";
+import { MapLocatorProps } from "./MapLocator.types";
+import AppMultipleSelect from "@/components/Atoms/AppMultipleSelect/AppMultipleSelect";
 
-function MapLocator({ locations }: { locations: Location[] }) {
+function MapLocator({ locations, categories, accessibilityFeatures }: MapLocatorProps) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
@@ -48,48 +49,6 @@ function MapLocator({ locations }: { locations: Location[] }) {
     // Fit the map to the calculated bounds
     map.fitBounds(bounds);
   }, []);
-
-  const handleSearch = async () => {
-    try {
-      if (filter.trim() === "") {
-        setSearchError("Please enter a search term.");
-        return;
-      }
-
-      // Find locations that match the filter
-      const filtered = locations.filter((loc) =>
-        loc.name.toLowerCase().includes(filter.toLowerCase()),
-      );
-      setFilteredLocations(filtered);
-
-      if (filtered.length === 0) {
-        setSearchError("No matching results found.");
-      } else {
-        setSearchError(null);
-
-        // If there's a matching result, zoom to it
-        if (map) {
-          if (filtered.length === 1) {
-            // If there's a single matching result, pan and zoom to it
-            map.panTo({ lat: filtered[0].latitude, lng: filtered[0].longitude });
-            map.setZoom(15); // Adjust the zoom level as needed
-          } else {
-            // If there are multiple matches, adjust the viewport to encompass all of them
-            const bounds = new window.google.maps.LatLngBounds();
-            filtered.forEach((loc) => {
-              bounds.extend({ lat: loc.latitude, lng: loc.longitude });
-            });
-            map.fitBounds(bounds);
-          }
-        }
-      }
-
-      // Reset the active marker
-      setActiveMarker(null);
-    } catch (error) {
-      setSearchError("Error searching. Please try again later.");
-    }
-  };
 
   const handleClearFilters = () => {
     setFilter("");
@@ -142,6 +101,49 @@ function MapLocator({ locations }: { locations: Location[] }) {
     });
   };
 
+  const handleSearch = async () => {
+    try {
+      if (filter.trim() === "") {
+        setSearchError("Please enter a search term.");
+        return;
+      }
+
+      // Find locations that match the filter
+      const filtered = locations.filter((loc) =>
+        loc.name.toLowerCase().includes(filter.toLowerCase()),
+      );
+      setFilteredLocations(filtered);
+
+      if (filtered.length === 0) {
+        setSearchError("No matching results found.");
+      } else {
+        setSearchError(null);
+
+        // If there's a matching result, zoom to it
+        if (map) {
+          if (filtered.length === 1) {
+            // If there's a single matching result, pan and zoom to it
+            map.panTo({ lat: filtered[0].latitude, lng: filtered[0].longitude });
+            map.setZoom(15); // Adjust the zoom level as needed
+          } else {
+            // If there are multiple matches, adjust the viewport to encompass all of them
+            const bounds = new window.google.maps.LatLngBounds();
+            filtered.forEach((loc) => {
+              bounds.extend({ lat: loc.latitude, lng: loc.longitude });
+            });
+            map.fitBounds(bounds);
+          }
+        }
+      }
+
+      // Reset the active marker
+      setActiveMarker(null);
+    } catch (error) {
+      setSearchError("Error searching. Please try again later.");
+    }
+    handleCustomAddressSearch();
+  };
+
   return isLoaded ? (
     <>
       <div className="grid lg:grid-cols-4 gap-5 py-3 w-100">
@@ -159,8 +161,22 @@ function MapLocator({ locations }: { locations: Location[] }) {
         />
         <AppSelect
           name="First select"
-          options={[{ title: "First", value: "first" }]}
+          options={categories.map((category) => {
+            return {
+              title: category.name,
+              value: category.name,
+            };
+          })}
           selectPlaceholderTitle="First select"
+        />
+        <AppMultipleSelect
+          togglerTitle="Tagovi"
+          options={accessibilityFeatures.map((feature) => {
+            return {
+              label: feature.name,
+              value: feature.name,
+            };
+          })}
         />
         <div className="flex gap-3">
           <AppButton variant="primary" onClick={handleSearch} fullWidth>

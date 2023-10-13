@@ -1,18 +1,8 @@
-export interface Location {
-  id: number;
-  name: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-  category: {
-    id: number;
-    name: string;
-    relativeUrl: string;
-  };
-  accessibilityFeatures: [
-    {
-      id: number;
-      name: string;
-    },
-  ];
+import { Category } from "@/hooks/useGetCategories/useGetCategories.types";
+import { Location } from "@/hooks/useGetLocations/useGetLocations.types";
+
+export interface MapLocatorProps {
+  locations: Location[];
+  categories: Category[];
+  accessibilityFeatures: AccessibilityFeature[];
 }
