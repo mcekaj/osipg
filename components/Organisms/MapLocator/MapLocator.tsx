@@ -193,7 +193,7 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
         </div>
       </div>
       {searchError && <p>{searchError}</p>}
-      <GoogleMap zoom={10} onLoad={onLoad} mapContainerStyle={{ width: "100%", height: 500 }}>
+      <GoogleMap zoom={10} onLoad={onLoad} mapContainerStyle={{ width: "100%", height: 800 }}>
         <MarkerClusterer
           options={{
             minimumClusterSize: 2,
