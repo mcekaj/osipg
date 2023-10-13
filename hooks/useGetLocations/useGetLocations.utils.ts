@@ -1,9 +1,12 @@
 import { Location } from "./useGetLocations.types";
 
-export const getLocations = async () => {
-  const data: Location[] = await fetch(`${process.env.NEXT_PUBLIC_URL}locations`).then((res) =>
-    res.json(),
-  );
+export const getLocations = async (categoryId?: number) => {
+  let baseEndpoint = `${process.env.NEXT_PUBLIC_URL}locations`;
+  if (categoryId) {
+    baseEndpoint = `${baseEndpoint}?categoryId=${categoryId}`;
+  }
+
+  const data: Location[] = await fetch(baseEndpoint).then((res) => res.json());
   return data;
 };
 

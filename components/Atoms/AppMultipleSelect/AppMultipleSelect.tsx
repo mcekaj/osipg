@@ -25,7 +25,7 @@ const AppMultipleSelect = ({ togglerTitle, options }: AppMultipleSelectProps) =>
           aria-labelledby="dropdownSearchButton"
         >
           {options.map((option) => (
-            <li>
+            <li key={option.value}>
               <div className="flex items-center p-2 rounded hover:bg-blue-200 dark:hover:bg-gray-600 ">
                 <input
                   id={option.label}

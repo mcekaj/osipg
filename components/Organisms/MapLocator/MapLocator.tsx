@@ -15,6 +15,7 @@ import React from "react";
 import Link from "next/link";
 import { MapLocatorProps } from "./MapLocator.types";
 import AppMultipleSelect from "@/components/Atoms/AppMultipleSelect/AppMultipleSelect";
+import useGetLocations from "@/hooks/useGetLocations/useGetLocations";
 
 function MapLocator({ locations, categories, accessibilityFeatures }: MapLocatorProps) {
   const { isLoaded } = useJsApiLoader({
@@ -26,6 +27,7 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
   const [searchError, setSearchError] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [customAddress, setCustomAddress] = useState<string>(""); // State for custom address input
+  const [selectedCategory, setSelectedCategory] = useState<number>(0); // State for custom address input
   const [geocoder, setGeocoder] = useState<google.maps.Geocoder | null>(null); // Geocoder instance
   const [customMarker, setCustomMarker] = useState<google.maps.Marker | null>(null); // Custom marker
   const [filteredLocations, setFilteredLocations] = useState(locations);
@@ -103,13 +105,16 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
 
   const handleSearch = async () => {
     try {
-      if (filter.trim() === "") {
-        setSearchError("Please enter a search term.");
-        return;
-      }
+      // if (filter.trim() === "") {
+      //   setSearchError("Please enter a search term.");
+      //   return;
+      // }
+      const { locations: locationsByCategory } = await useGetLocations({
+        categoryId: selectedCategory,
+      });
 
       // Find locations that match the filter
-      const filtered = locations.filter((loc) =>
+      const filtered = locationsByCategory.filter((loc) =>
         loc.name.toLowerCase().includes(filter.toLowerCase()),
       );
       setFilteredLocations(filtered);
@@ -164,9 +169,11 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
           options={categories.map((category) => {
             return {
               title: category.name,
-              value: category.name,
+              value: category.id,
             };
           })}
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(+e.target.value)}
           selectPlaceholderTitle="First select"
         />
         <AppMultipleSelect
