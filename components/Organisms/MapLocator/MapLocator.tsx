@@ -9,13 +9,17 @@ import {
   MarkerF,
   InfoWindowF,
 } from "@react-google-maps/api";
-import Image from "next/image";
 import { useCallback, useState } from "react";
 import React from "react";
 import Link from "next/link";
 import { MapLocatorProps } from "./MapLocator.types";
 import AppMultipleSelect from "@/components/Atoms/AppMultipleSelect/AppMultipleSelect";
 import useGetLocations from "@/hooks/useGetLocations/useGetLocations";
+import Cluster1 from "@/styles/assets/cluster-1.png";
+import Cluster2 from "@/styles/assets/cluster-2.png";
+import Cluster3 from "@/styles/assets/cluster-3.png";
+import Cluster4 from "@/styles/assets/cluster-4.png";
+import Cluster5 from "@/styles/assets/cluster-5.png";
 
 function MapLocator({ locations, categories, accessibilityFeatures }: MapLocatorProps) {
   const { isLoaded } = useJsApiLoader({
@@ -149,6 +153,7 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
     handleCustomAddressSearch();
   };
 
+  const iconArray = [Cluster1, Cluster2, Cluster3, Cluster4, Cluster5];
   return isLoaded ? (
     <>
       <div className="grid lg:grid-cols-4 gap-5 py-3 w-100">
@@ -196,11 +201,53 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
       </div>
       {searchError && <p>{searchError}</p>}
       <GoogleMap zoom={10} onLoad={onLoad} mapContainerStyle={{ width: "100%", height: 500 }}>
-        <MarkerClusterer options={{ minimumClusterSize: 2, enableRetinaIcons: true }}>
+        <MarkerClusterer
+          options={{
+            minimumClusterSize: 2,
+            enableRetinaIcons: true,
+            gridSize: 60,
+
+            calculator: (markers, numStyles) => {
+              const clusterSize = markers.length;
+              let index = 0;
+
+              // Determine the index of the icon based on the cluster size
+              if (clusterSize >= 10) {
+                index = 4;
+              } else if (clusterSize >= 5) {
+                index = 3;
+              } else if (clusterSize >= 2) {
+                index = 2;
+              } else if (clusterSize === 1) {
+                index = 1;
+              }
+
+              const icon = iconArray[index]; // Get the appropriate icon from the iconArray
+
+              // Create a custom HTML for the cluster icon
+              const customHtml = `<div style="position:relative;width:80px; height:80px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <img src="${icon.src}" width="80" height="80" />
+              <p style="position:absolute;font-size:20px;color:blue">${clusterSize}</p>
+            </div>`;
+
+              return {
+                text: clusterSize.toString(),
+                index,
+                title: "",
+                html: customHtml, // Use the custom HTML for the cluster icon
+              };
+            },
+          }}
+        >
           {(clusterer) => (
             <div>
               {filteredLocations.map((loc) => (
                 <MarkerF
+                  options={{
+                    icon: {
+                      url: `${process.env.NEXT_PUBLIC_BASE_URL}/${loc.category.relativeUrl}`,
+                    },
+                  }}
                   key={loc.id}
                   position={{ lat: loc.latitude, lng: loc.longitude }}
                   clusterer={clusterer}
@@ -208,6 +255,8 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
                     setActiveMarker(loc.id);
                   }}
                 >
+                  {process.env.NEXT_PUBLIC_BASE_URL}
+                  {loc.category.relativeUrl}
                   {activeMarker === loc.id && (
                     <InfoWindowF
                       onCloseClick={() => {
@@ -215,12 +264,6 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
                       }}
                     >
                       <div className="flex flex-col gap-3 lg:flex-row">
-                        <Image
-                          src={`${process.env.NEXT_PUBLIC_BASE_URL}${loc.category.relativeUrl}`}
-                          width={200}
-                          height={200}
-                          alt="dasda"
-                        />
                         <div className="flex flex-col justify-between">
                           <h3 className="text-blue-800 text-lg">
                             <strong>{loc.name}</strong>
