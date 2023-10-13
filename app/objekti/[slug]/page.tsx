@@ -16,12 +16,6 @@ const Page = async ({
       <h1>Name:{location.name}</h1>
       <p>Description{location.description}</p>
       <p>Kategorija: {location.category.name}</p>
-      <Image
-        alt={location.category.name}
-        width={50}
-        height={50}
-        src={`${process.env.NEXT_PUBLIC_BASE_URL}${location.category.relativeUrl}`}
-      />
     </div>
   );
 };
