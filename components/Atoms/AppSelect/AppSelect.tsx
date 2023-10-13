@@ -20,12 +20,14 @@ const AppSelect = ({ label, name, className, options, selectPlaceholderTitle }: 
           className,
         )}
       >
-        <option disabled selected>
+        <option disabled value="">
           {selectPlaceholderTitle}
         </option>
 
         {options.map((option) => (
-          <option value={option.value}>{option.title}</option>
+          <option key={option.value} value={option.value}>
+            {option.title}
+          </option>
         ))}
       </select>
     </div>

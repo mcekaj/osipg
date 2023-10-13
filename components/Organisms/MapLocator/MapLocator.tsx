@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useCallback, useState } from "react";
 import React from "react";
 import { Location } from "./MapLocator.types";
+import Link from "next/link";
 
 function MapLocator({ locations }: { locations: Location[] }) {
   const { isLoaded } = useJsApiLoader({
@@ -38,7 +39,6 @@ function MapLocator({ locations }: { locations: Location[] }) {
     // Loop through the marker positions and extend the bounds for each position
 
     locations.forEach((loc) => {
-      console.log(loc);
       bounds.extend({
         lat: loc.latitude,
         lng: loc.longitude,
@@ -87,7 +87,6 @@ function MapLocator({ locations }: { locations: Location[] }) {
       // Reset the active marker
       setActiveMarker(null);
     } catch (error) {
-      console.error("Error searching:", error);
       setSearchError("Error searching. Please try again later.");
     }
   };
@@ -208,7 +207,9 @@ function MapLocator({ locations }: { locations: Location[] }) {
                           </h3>
                           <p>Lat: {loc.longitude}</p>
                           <p>Lng: {loc.latitude}</p>
-                          <AppButton variant="outlined">Opširnije</AppButton>
+                          <Link href={`objekti/${loc.id}`}>
+                            <AppButton variant="outlined">Opširnije</AppButton>
+                          </Link>
                         </div>
                       </div>
                     </InfoWindowF>

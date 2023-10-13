@@ -1,16 +1,15 @@
 import MapLocator from "@/components/Organisms/MapLocator/MapLocator";
-const getData = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}locations`).then((res) => res.json());
-  return res;
-};
+import useGetLocations from "@/hooks/useGetLocations/useGetLocations";
+import Head from "next/head";
+
 export default async function Home() {
-  const data = await getData();
-  if (!data) {
+  const { locations } = await useGetLocations();
+  if (!locations) {
     return null;
   }
   return (
     <div>
-      <MapLocator locations={data} />
+      <MapLocator locations={locations} />
     </div>
   );
 }
