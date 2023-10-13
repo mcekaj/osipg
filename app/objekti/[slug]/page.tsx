@@ -1,5 +1,4 @@
 import useGetLocations from "@/hooks/useGetLocations/useGetLocations";
-import Image from "next/image";
 
 const Page = async ({
   params,
@@ -8,7 +7,7 @@ const Page = async ({
     slug: string;
   };
 }) => {
-  const { location } = await useGetLocations(Number(params.slug));
+  const { location } = await useGetLocations({ locationId: Number(params.slug) });
   if (!location) return null;
   return (
     <div>
