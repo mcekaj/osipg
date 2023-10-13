@@ -113,12 +113,12 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
       //   setSearchError("Please enter a search term.");
       //   return;
       // }
-      const { locations: locationsByCategory } = await useGetLocations({
+      const { locationsByCategoryId } = await useGetLocations({
         categoryId: selectedCategory,
       });
 
       // Find locations that match the filter
-      const filtered = locationsByCategory.filter((loc) =>
+      const filtered = locationsByCategoryId.filter((loc) =>
         loc.name.toLowerCase().includes(filter.toLowerCase()),
       );
       setFilteredLocations(filtered);
