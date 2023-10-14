@@ -9,6 +9,8 @@ const AppInput = ({
   className,
   value,
   onChange,
+  errorMessage,
+  ...props
 }: AppInputProps) => {
   return (
     <div className="h-100">
@@ -22,6 +24,7 @@ const AppInput = ({
       )}
       <input
         type={type}
+        id={name}
         className={twMerge(
           "bg-blue-100 font-bold border placeholder:font-medium border-gray-300 text-blue-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500",
           className,
@@ -29,7 +32,9 @@ const AppInput = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        {...props}
       />
+      {errorMessage && <p className="text-sm text-red-700">{errorMessage}</p>}
     </div>
   );
 };
