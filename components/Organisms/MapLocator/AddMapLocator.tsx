@@ -1,9 +1,14 @@
 "use client";
 
-import AddLocationForm from "@/components/Molecules/AddLocationForm";
+import AddLocationForm from "@/components/Molecules/AddLocationForm/AddLocationForm";
+import useGetAccessibilityFeatures from "@/hooks/useGetAccessibilityFeatures/useGetAccessibilityFeatures";
+import useGetCategories from "@/hooks/useGetCategories/useGetCategories";
 import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
 import { useCallback, useState } from "react";
 import React from "react";
+import { Category } from "@/hooks/useGetCategories/useGetCategories.types";
+import useGetCities from "@/hooks/useGetCities/useGetCities";
+import { DropdownsData } from "./AddMapLocator.types";
 
 function MapLocator() {
   const { isLoaded } = useJsApiLoader({
@@ -13,13 +18,27 @@ function MapLocator() {
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [userPin, setUserPin] = useState<null | { lat: number; lng: number }>(null);
-  const [categories, setCategories] = useState();
-  const [accessibilityFeatureIds, setAccessibilityFeatureIds] = useState();
-  const [cities, setCities] = useState();
+  const [dropdownsData, setDropdownsData] = useState<DropdownsData>({
+    categories: [],
+    accessibilityFeatures: [],
+    cities: [],
+  });
   const MONTENEGRO_CENTER = { lat: 42.708678, lng: 19.37439 };
 
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map); // Store the map instance
+    const fetchDropdowns = async () => {
+      const { categories: fetchedCategories } = await useGetCategories();
+      const { accessibilityFeatures: fetchedAccessibilityFeatures } =
+        await useGetAccessibilityFeatures();
+      const { cities: fetchedCities } = await useGetCities();
+      setDropdownsData({
+        categories: fetchedCategories,
+        accessibilityFeatures: fetchedAccessibilityFeatures,
+        cities: fetchedCities,
+      });
+    };
+    fetchDropdowns();
   }, []);
 
   const handlePinDrag = (event: google.maps.MapMouseEvent) => {
@@ -37,7 +56,7 @@ function MapLocator() {
 
   return isLoaded ? (
     <>
-      <AddLocationForm lat={userPin?.lat} lng={userPin?.lng} />
+      <AddLocationForm lat={userPin?.lat} lng={userPin?.lng} dropdownsData={dropdownsData} />
       <GoogleMap
         center={userPin || MONTENEGRO_CENTER}
         onClick={handleClickOnMap}

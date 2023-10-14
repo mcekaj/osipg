@@ -9,6 +9,7 @@ const AppInput = ({
   className,
   value,
   onChange,
+  errorMessage,
   ...props
 }: AppInputProps) => {
   return (
@@ -33,6 +34,7 @@ const AppInput = ({
         onChange={onChange}
         {...props}
       />
+      {errorMessage && <p className="text-sm text-red-700">{errorMessage}</p>}
     </div>
   );
 };

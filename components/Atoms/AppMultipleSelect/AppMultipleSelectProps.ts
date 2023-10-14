@@ -6,4 +6,5 @@ export interface AppMultipleSelectProps {
   }[];
   selectedOptions: any;
   setSelectedOptions: any;
+  errorMessage?:string
 }

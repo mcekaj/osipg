@@ -9,6 +9,7 @@ const AppMultipleSelect = ({
   options,
   selectedOptions,
   setSelectedOptions,
+  errorMessage,
 }: AppMultipleSelectProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -46,7 +47,7 @@ const AppMultipleSelect = ({
                   id={option.label}
                   type="checkbox"
                   onChange={() => {
-                    handleCheckboxChange(option.value);
+                    handleCheckboxChange(option.value.toString());
                   }}
                   value={option.value}
                   className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
@@ -62,6 +63,7 @@ const AppMultipleSelect = ({
           ))}
         </ul>
       </div>
+      {errorMessage && <p className="text-sm text-red-700">{errorMessage}</p>}
     </div>
   );
 };
