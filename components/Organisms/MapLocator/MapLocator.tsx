@@ -9,7 +9,7 @@ import {
   MarkerF,
   InfoWindowF,
 } from "@react-google-maps/api";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import React from "react";
 import Link from "next/link";
 import { MapLocatorProps } from "./MapLocator.types";
@@ -20,6 +20,7 @@ import Cluster2 from "@/styles/assets/cluster-2.png";
 import Cluster3 from "@/styles/assets/cluster-3.png";
 import Cluster4 from "@/styles/assets/cluster-4.png";
 import Cluster5 from "@/styles/assets/cluster-5.png";
+import { toast } from "react-toastify";
 
 function MapLocator({ locations, categories, accessibilityFeatures }: MapLocatorProps) {
   const { isLoaded } = useJsApiLoader({
@@ -35,6 +36,11 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
   const [geocoder, setGeocoder] = useState<google.maps.Geocoder | null>(null); // Geocoder instance
   const [customMarker, setCustomMarker] = useState<google.maps.Marker | null>(null); // Custom marker
   const [filteredLocations, setFilteredLocations] = useState(locations);
+
+  const displayError = () => toast(searchError);
+  useEffect(() => {
+    displayError();
+  }, [searchError]);
 
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map); // Store the map instance
@@ -199,7 +205,6 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
           </AppButton>
         </div>
       </div>
-      {searchError && <p>{searchError}</p>}
       <GoogleMap zoom={10} onLoad={onLoad} mapContainerStyle={{ width: "100%", height: 800 }}>
         <MarkerClusterer
           options={{
