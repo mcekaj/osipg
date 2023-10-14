@@ -8,11 +8,20 @@ import FaktIcon from "@/styles/assets/fakt.png";
 import ArtgrafikaIcon from "@/styles/assets/artgrafika.png";
 import MarkerIcon from "@/styles/assets/marker.png";
 import Image from "next/image";
+import useGetCities from "@/hooks/useGetCities/useGetCities";
 
 export default async function Home() {
-  const { locations } = await useGetLocations({});
+  const { locations } = await useGetLocations({
+    locationParams: {
+      categoryId: null,
+      cityId: null,
+      featureIds: [],
+      name: "",
+    },
+  });
   const { categories } = await useGetCategories();
   const { accessibilityFeatures } = await useGetAccessibilityFeatures();
+  const { cities } = await useGetCities();
 
   if (!locations) {
     return null;
@@ -20,9 +29,10 @@ export default async function Home() {
   return (
     <div>
       <MapLocator
-        locations={locations}
+        defaultLocations={locations}
         categories={categories}
         accessibilityFeatures={accessibilityFeatures}
+        cities={cities}
       />
       <div className="text-center my-10">
         <h1 className="text-4xl mb-10">Partneri Organizacije</h1>
