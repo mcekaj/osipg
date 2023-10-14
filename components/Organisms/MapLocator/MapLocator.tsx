@@ -22,20 +22,24 @@ import Cluster4 from "@/styles/assets/cluster-4.png";
 import Cluster5 from "@/styles/assets/cluster-5.png";
 import { toast } from "react-toastify";
 
-function MapLocator({ locations, categories, accessibilityFeatures }: MapLocatorProps) {
+function MapLocator({
+  defaultLocations,
+  categories,
+  accessibilityFeatures,
+  cities,
+}: MapLocatorProps) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
   });
   const [activeMarker, setActiveMarker] = useState<number | null>(null);
-  const [filter, setFilter] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [searchError, setSearchError] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [customAddress, setCustomAddress] = useState<string>(""); // State for custom address input
-  const [selectedCategory, setSelectedCategory] = useState<number>(0); // State for custom address input
-  const [geocoder, setGeocoder] = useState<google.maps.Geocoder | null>(null); // Geocoder instance
-  const [customMarker, setCustomMarker] = useState<google.maps.Marker | null>(null); // Custom marker
-  const [filteredLocations, setFilteredLocations] = useState(locations);
+  const [cityId, setCityId] = useState<number | null>(null); // State for custom address input
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null); // State for custom address input
+  const [selectedAccessabilityFeatures, setSelectedAccessabilityFeatures] = useState([]);
+  const [filteredLocations, setFilteredLocations] = useState(defaultLocations);
 
   const displayError = () => toast(searchError);
   useEffect(() => {
@@ -44,14 +48,13 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
 
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map); // Store the map instance
-    setGeocoder(new window.google.maps.Geocoder()); // Initialize the geocoder instance
 
     // Create an empty LatLngBounds object to store the bounds of all markers
     const bounds = new window.google.maps.LatLngBounds();
 
     // Loop through the marker positions and extend the bounds for each position
 
-    locations.forEach((loc) => {
+    defaultLocations.forEach((loc) => {
       bounds.extend({
         lat: loc.latitude,
         lng: loc.longitude,
@@ -63,15 +66,18 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
   }, []);
 
   const handleClearFilters = () => {
-    setFilter("");
+    setName("");
+    setCityId(null);
+    setSelectedCategory(null);
+    setSelectedAccessabilityFeatures([]);
     setSearchError(null);
     setActiveMarker(null);
-    setFilteredLocations(locations);
+    setFilteredLocations(defaultLocations);
 
     // Reset the map's center and zoom to fit all markers
     if (map) {
       const bounds = new window.google.maps.LatLngBounds();
-      locations.forEach((loc) => {
+      defaultLocations.forEach((loc) => {
         bounds.extend({
           lat: loc.latitude,
           lng: loc.longitude,
@@ -81,69 +87,37 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
     }
   };
 
-  const handleCustomAddressSearch = () => {
-    if (!geocoder || !customAddress.trim()) {
-      return;
-    }
-
-    geocoder.geocode({ address: customAddress }, (results, status) => {
-      if (status === "OK" && results && results.length > 0) {
-        const { location } = results[0].geometry;
-
-        // Remove the previous custom marker if it exists
-        if (customMarker) {
-          customMarker.setMap(null);
-        }
-
-        const marker = new window.google.maps.Marker({
-          position: location,
-          map,
-          title: customAddress,
-        });
-
-        // Pan and zoom to the custom marker
-        map?.panTo(location);
-        map?.setZoom(15);
-
-        // Set the new custom marker
-        setCustomMarker(marker);
-      } else {
-        setSearchError("Custom address not found.");
-      }
-    });
-  };
-
   const handleSearch = async () => {
     try {
-      // if (filter.trim() === "") {
-      //   setSearchError("Please enter a search term.");
-      //   return;
-      // }
-      const { locationsByCategoryId } = await useGetLocations({
-        categoryId: selectedCategory,
+      const { locations } = await useGetLocations({
+        locationParams: {
+          categoryId: selectedCategory,
+          cityId: cityId,
+          featureIds: selectedAccessabilityFeatures,
+          name: name,
+        },
       });
 
       // Find locations that match the filter
-      const filtered = locationsByCategoryId.filter((loc) =>
-        loc.name.toLowerCase().includes(filter.toLowerCase()),
-      );
-      setFilteredLocations(filtered);
 
-      if (filtered.length === 0) {
+      setFilteredLocations(locations);
+
+      if (locations.length === 0) {
         setSearchError("No matching results found.");
+        setFilteredLocations(defaultLocations);
       } else {
         setSearchError(null);
 
         // If there's a matching result, zoom to it
         if (map) {
-          if (filtered.length === 1) {
+          if (locations.length === 1) {
             // If there's a single matching result, pan and zoom to it
-            map.panTo({ lat: filtered[0].latitude, lng: filtered[0].longitude });
+            map.panTo({ lat: locations[0].latitude, lng: locations[0].longitude });
             map.setZoom(15); // Adjust the zoom level as needed
           } else {
             // If there are multiple matches, adjust the viewport to encompass all of them
             const bounds = new window.google.maps.LatLngBounds();
-            filtered.forEach((loc) => {
+            locations.forEach((loc) => {
               bounds.extend({ lat: loc.latitude, lng: loc.longitude });
             });
             map.fitBounds(bounds);
@@ -156,45 +130,53 @@ function MapLocator({ locations, categories, accessibilityFeatures }: MapLocator
     } catch (error) {
       setSearchError("Error searching. Please try again later.");
     }
-    handleCustomAddressSearch();
   };
 
   const iconArray = [Cluster1, Cluster2, Cluster3, Cluster4, Cluster5];
+
   return isLoaded ? (
     <>
-      <div className="grid lg:grid-cols-4 gap-5 py-3 w-100">
+      <div className="grid lg:grid-cols-5 gap-5 py-3 w-100">
         <AppInput
-          placeholder="Name"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          placeholder="Ime objekta"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           name="Name"
         />
-        <AppInput
-          name="address"
-          value={customAddress}
-          onChange={(e) => setCustomAddress(e.target.value)}
-          placeholder="Address"
+        <AppSelect
+          name="cities"
+          options={cities.map((city) => {
+            return {
+              title: city.name,
+              value: city.id,
+            };
+          })}
+          value={cityId || 0}
+          onChange={(e) => setCityId(Number(e.target.value))}
+          selectPlaceholderTitle="Grad"
         />
         <AppSelect
-          name="First select"
+          name="kategorije"
           options={categories.map((category) => {
             return {
               title: category.name,
               value: category.id,
             };
           })}
-          value={selectedCategory}
+          value={selectedCategory || 0}
           onChange={(e) => setSelectedCategory(+e.target.value)}
-          selectPlaceholderTitle="First select"
+          selectPlaceholderTitle="Kategorije"
         />
         <AppMultipleSelect
-          togglerTitle="Tagovi"
+          togglerTitle="Elementi pristupačnosti"
           options={accessibilityFeatures.map((feature) => {
             return {
               label: feature.name,
-              value: feature.name,
+              value: feature.id,
             };
           })}
+          selectedOptions={selectedAccessabilityFeatures}
+          setSelectedOptions={setSelectedAccessabilityFeatures}
         />
         <div className="flex gap-3">
           <AppButton variant="primary" onClick={handleSearch} fullWidth>

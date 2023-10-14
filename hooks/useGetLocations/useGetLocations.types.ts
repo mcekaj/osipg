@@ -16,3 +16,9 @@ export interface Location {
     },
   ];
 }
+export interface UseGetLocationsProps {
+  name: string | null;
+  categoryId: number | null;
+  cityId: number | null;
+  featureIds: number[] | null;
+}

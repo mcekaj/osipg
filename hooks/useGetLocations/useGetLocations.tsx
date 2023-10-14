@@ -1,19 +1,19 @@
-import { Location } from "./useGetLocations.types";
-import { getLocation, getLocationByCategoryId, getLocations } from "./useGetLocations.utils";
+import { Location, UseGetLocationsProps } from "./useGetLocations.types";
+import { getLocation, getLocations } from "./useGetLocations.utils";
 
 const useGetLocations = async ({
   locationId,
-  categoryId,
+  locationParams,
 }: {
   locationId?: number;
-  categoryId?: number;
+  locationParams: UseGetLocationsProps;
 }) => {
   let locations: Location[] = [];
-  locations = await getLocations();
-  let location = {};
-  if (locationId) location = await getLocation(locationId);
-  let locationsByCategoryId: Location[] = [];
-  if (categoryId) locationsByCategoryId = await getLocationByCategoryId(categoryId);
-  return { locations: locations, location: location, locationsByCategoryId };
+  if (locationParams) {
+    locations = await getLocations(locationParams);
+  }
+  // const locations = await getLocations(locationParams);
+  const location = await getLocation(locationId);
+  return { locations: locations, location: location };
 };
 export default useGetLocations;
