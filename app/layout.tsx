@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Footer from "@/components/Organisms/Footer/Footer";
+import ToastProvider from "@/components/Atoms/ToastProvider/ToastProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <div className="min-h-screen container mx-auto px-4 ">
           <Header />
-          <div className="pt-20">{children}</div>
+          <ToastProvider>
+            <div className="pt-20">{children}</div>
+          </ToastProvider>
         </div>
         <Footer />
       </body>
