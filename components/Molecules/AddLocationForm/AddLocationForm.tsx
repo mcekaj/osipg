@@ -54,7 +54,7 @@ function AddLocationForm({
   const [selectedAccessibilityFeatures, setSelectedAccessibilityFeatures] = useState<string[]>([]);
   const [descriptionFromEditor, setDescriptionFromEditor] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
-  const { name, description, address, postalNumber } = formState;
+  const { name, address, postalNumber } = formState;
   const [errors, setErrors] = useState<TErrorType>({});
 
   const { sendDataAndUploadImage, response, isLoading } = useHandleForm("thumbnail");
@@ -88,6 +88,8 @@ function AddLocationForm({
     sendDataAndUploadImage(image, payload);
     dispatch({ type: FORM_ACTIONS.RESET_STATE });
     setSelectedAccessibilityFeatures((prev) => []);
+    setImage(null);
+    setDescriptionFromEditor("");
     toast("Location successfully created");
   };
 
