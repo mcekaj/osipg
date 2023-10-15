@@ -110,7 +110,7 @@ function MapLocator({
 
         // If there's a matching result, zoom to it
         if (map) {
-          if (locations.length === 1) {
+          if (locations.length >= 1) {
             // If there's a single matching result, pan and zoom to it
             map.panTo({ lat: locations[0].latitude, lng: locations[0].longitude });
             map.setZoom(15); // Adjust the zoom level as needed
@@ -187,7 +187,7 @@ function MapLocator({
           </AppButton>
         </div>
       </div>
-      <GoogleMap zoom={10} onLoad={onLoad} mapContainerStyle={{ width: "100%", height: 800 }}>
+      <GoogleMap zoom={10} onLoad={onLoad} mapContainerStyle={{ width: "100%", height: 600 }}>
         <MarkerClusterer
           options={{
             minimumClusterSize: 2,
@@ -250,18 +250,23 @@ function MapLocator({
                         setActiveMarker(null);
                       }}
                     >
-                      <div className="flex flex-col gap-3 lg:flex-row">
-                        <div className="flex flex-col justify-between">
+                      <div className="flex flex-col gap-3 lg:flex-row items-center">
+                        <div>
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_BASE_URL}/${loc.category.relativeUrl}`}
+                            alt={loc.category.name}
+                          />
+                        </div>
+                        <div className="flex flex-col justify-between gap-3">
                           <h3 className="text-blue-800 text-lg">
                             <strong>{loc.name}</strong>
                           </h3>
-                          <h3 className="text-gray-700 text-lg">
-                            Mila jovovica 32, Podgorica Crna Gora
-                          </h3>
-                          <p>Lat: {loc.longitude}</p>
-                          <p>Lng: {loc.latitude}</p>
-                          <Link href={`objekti/${loc.id}`}>
-                            <AppButton variant="outlined">Opširnije</AppButton>
+                          <h3 className="text-gray-700 text-lg">{loc.address}</h3>
+                          <p>{loc.description}</p>
+                          <Link href={`objekti/${loc.slug}`}>
+                            <AppButton variant="outlined" fullWidth>
+                              Opširnije
+                            </AppButton>
                           </Link>
                         </div>
                       </div>

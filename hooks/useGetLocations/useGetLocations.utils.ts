@@ -31,9 +31,9 @@ export const getLocations = async ({
   return data;
 };
 
-export const getLocation = async (id?: number) => {
-  const data: Location = await fetch(`${process.env.NEXT_PUBLIC_URL}locations/${id}`).then((res) =>
-    res.json(),
+export const getLocation = async (slug?: string) => {
+  const data: Location = await fetch(`${process.env.NEXT_PUBLIC_URL}locations/${slug}`).then(
+    (res) => res.json(),
   );
   return data;
 };

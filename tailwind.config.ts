@@ -14,6 +14,7 @@ const config: Config = {
       },
       colors: {
         primary: "#1A477E",
+        lightBlue: "#FAFCFF",
       },
     },
   },
