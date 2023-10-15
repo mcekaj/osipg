@@ -111,6 +111,17 @@ function AddLocationForm({
   };
   return (
     <form className="md:flex md:flex-col md:gap-3 mb-3" onSubmit={handleFormSubmit}>
+      <div className="text-xl font-bold my-3 text-blue-700">Create location</div>
+      <div>
+        <AppInput
+          name="name"
+          label="Name"
+          value={name}
+          onChange={handleInputChange}
+          type="text"
+          required
+        />
+      </div>
       <div className="md:flex md:gap-3 ">
         <div className="h-100">
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -168,17 +179,6 @@ function AddLocationForm({
           onChange={handleInputChange}
           type="number"
           errorMessage={errors.postalNumber}
-        />
-      </div>
-
-      <div>
-        <AppInput
-          name="name"
-          label="Name"
-          value={name}
-          onChange={handleInputChange}
-          type="text"
-          required
         />
       </div>
 
