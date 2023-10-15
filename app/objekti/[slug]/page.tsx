@@ -70,10 +70,12 @@ const Page = async ({
         </div>
       </div>
       <div className="my-10">
-        <img
-          src={`${process.env.NEXT_PUBLIC_BASE_URL}/${location.thumbnailUrl}`}
-          className="h-96 mx-auto"
-        />
+        {location.thumbnailUrl && (
+          <img
+            src={`${process.env.NEXT_PUBLIC_BASE_URL}/${location.thumbnailUrl}`}
+            className="h-96 mx-auto"
+          />
+        )}
       </div>
       <div dangerouslySetInnerHTML={{ __html: location.description }} />
     </div>
