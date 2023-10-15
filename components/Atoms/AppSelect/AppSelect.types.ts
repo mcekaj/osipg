@@ -6,6 +6,7 @@ interface AppSelectOptionProps {
 }
 export interface AppSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
-  selectPlaceholderTitle: string;
+  selectPlaceholderTitle?: string;
   options: AppSelectOptionProps[];
+  errorMessage?: string;
 }
