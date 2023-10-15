@@ -56,6 +56,7 @@ export default async function Home() {
       <AppSwiper
         swiperContent={news.map((item) => (
           <SwiperCard
+            bgImage={`${process.env.NEXT_PUBLIC_BASE_URL}/${item.imageRelativeUri}`}
             linkHref={`vijesti/${item.slug}`}
             linkTitle="Procitaj vise"
             title={item.title}

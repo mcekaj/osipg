@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { SwiperCardProps } from "./SwiperCard.types";
 
-const SwiperCard = ({ linkHref, linkTitle, title }: SwiperCardProps) => {
+const SwiperCard = ({ linkHref, linkTitle, title, bgImage }: SwiperCardProps) => {
   return (
     <div
       className="flex items-end justify-start rounded-md h-64 w-full p-5"
       style={{
-        backgroundImage: `url("https://picsum.photos/200")`,
+        backgroundImage: `url(${bgImage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
       }}
