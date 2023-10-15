@@ -10,6 +10,7 @@ import { TErrorType, validateFormData } from "./AddLocationForm.utils";
 import useCreateLocation from "@/hooks/useCreateLocation/useCreateLocation";
 import { TCreateLocationPayload, TInitialFormState } from "./AddLocationForm.types";
 import { toast } from "react-toastify";
+import RichTextEditor from "../QuillEditor/QuillEditor";
 
 interface IAddLocationForm {
   lat: number | undefined;
@@ -50,6 +51,7 @@ function AddLocationForm({
 }: IAddLocationForm) {
   const [formState, dispatch] = useReducer(reducer, initialFormState);
   const [selectedAccessibilityFeatures, setSelectedAccessibilityFeatures] = useState<string[]>([]);
+  const [descriptionFromEditor, setDescriptionFromEditor] = useState<string>("");
   const { name, description, address, postalNumber } = formState;
   const [errors, setErrors] = useState<TErrorType>({});
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -67,14 +69,16 @@ function AddLocationForm({
       categoryId: +formState.categoryId,
       cityId: +formState.cityId,
       postalNumber: +formState.postalNumber,
+      description: descriptionFromEditor,
       latitude: lat,
       longitude: lng,
       accessibilityFeatureIds: selectedAccessibilityFeatures.map((featureId) => +featureId),
     };
-    const { createdLocation } = await useCreateLocation(payload);
-    dispatch({ type: FORM_ACTIONS.RESET_STATE });
-    setSelectedAccessibilityFeatures((prev) => []);
-    toast("Location successfully created");
+    console.log(payload);
+    // const { createdLocation } = await useCreateLocation(payload);
+    // dispatch({ type: FORM_ACTIONS.RESET_STATE });
+    // setSelectedAccessibilityFeatures((prev) => []);
+    // toast("Location successfully created");
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,37 +101,11 @@ function AddLocationForm({
   };
   return (
     <form className="md:flex md:flex-col md:gap-3 mb-3" onSubmit={handleFormSubmit}>
-      <div className="md:flex md:justify-between ">
-        <AppInput
-          name="name"
-          label="Name"
-          value={name}
-          onChange={handleInputChange}
-          type="text"
-          required
-        />
-        <AppInput
-          name="description"
-          label="Descripton"
-          value={description}
-          onChange={handleInputChange}
-          type="text"
-          required
-        />
-        <AppSelect
-          name="categoryId"
-          label="Categories"
-          options={categories.map((category) => {
-            return {
-              title: category.name,
-              value: category.id,
-            };
-          })}
-          value={formState.categoryId}
-          onChange={handleSelectChange}
-          errorMessage={errors?.categoryId}
-        />
-        <div className="md:pt-7">
+      <div className="md:flex md:gap-3 ">
+        <div className="h-100">
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Accessibility features
+          </label>
           <AppMultipleSelect
             togglerTitle="Accessibility Features"
             options={accessibilityFeatures.map((feature) => {
@@ -141,9 +119,19 @@ function AddLocationForm({
             errorMessage={errors.accessibilityFeatures}
           />
         </div>
-      </div>
-
-      <div className="md:flex md:justify-between">
+        <AppSelect
+          name="categoryId"
+          label="Categories"
+          options={categories.map((category) => {
+            return {
+              title: category.name,
+              value: category.id,
+            };
+          })}
+          value={formState.categoryId}
+          onChange={handleSelectChange}
+          errorMessage={errors?.categoryId}
+        />
         <AppInput
           name="address"
           label="Address"
@@ -173,6 +161,20 @@ function AddLocationForm({
           required
           errorMessage={errors.postalNumber}
         />
+      </div>
+
+      <div>
+        <AppInput
+          name="name"
+          label="Name"
+          value={name}
+          onChange={handleInputChange}
+          type="text"
+          required
+        />
+      </div>
+
+      <div className="md:flex md:gap-3">
         <AppInput
           name="latitude"
           label="Latitude"
@@ -193,6 +195,14 @@ function AddLocationForm({
           placeholder="Please click on a map"
           errorMessage={errors.longitude}
         />
+      </div>
+      <div>
+        <div className="h-100">
+          <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+            Description
+          </label>
+          <RichTextEditor content={descriptionFromEditor} setContent={setDescriptionFromEditor} />
+        </div>
       </div>
       <div className="mt-2 md:flex md:justify-end">
         <AppButton type="submit">Create new location</AppButton>
