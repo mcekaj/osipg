@@ -1,13 +1,12 @@
 "use client";
 
-import { FormEvent, useReducer, useState, useEffect } from "react";
+import { FormEvent, useReducer, useState } from "react";
 import AppButton from "../../Atoms/AppButton/AppButton";
 import AppInput from "../../Atoms/AppInput/AppInput";
 import AppSelect from "../../Atoms/AppSelect/AppSelect";
 import AppMultipleSelect from "../../Atoms/AppMultipleSelect/AppMultipleSelect";
 import { DropdownsData } from "../../Organisms/MapLocator/AddMapLocator.types";
 import { TErrorType, validateFormData } from "./AddLocationForm.utils";
-import useCreateLocation from "@/hooks/useCreateLocation/useCreateLocation";
 import { TCreateLocationPayload, TInitialFormState } from "./AddLocationForm.types";
 import { toast } from "react-toastify";
 import RichTextEditor from "../QuillEditor/QuillEditor";
