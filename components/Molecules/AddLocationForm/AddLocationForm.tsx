@@ -1,16 +1,17 @@
 "use client";
 
-import { FormEvent, useReducer, useState, useEffect } from "react";
+import { FormEvent, useReducer, useState } from "react";
 import AppButton from "../../Atoms/AppButton/AppButton";
 import AppInput from "../../Atoms/AppInput/AppInput";
 import AppSelect from "../../Atoms/AppSelect/AppSelect";
 import AppMultipleSelect from "../../Atoms/AppMultipleSelect/AppMultipleSelect";
 import { DropdownsData } from "../../Organisms/MapLocator/AddMapLocator.types";
 import { TErrorType, validateFormData } from "./AddLocationForm.utils";
-import useCreateLocation from "@/hooks/useCreateLocation/useCreateLocation";
 import { TCreateLocationPayload, TInitialFormState } from "./AddLocationForm.types";
 import { toast } from "react-toastify";
 import RichTextEditor from "../QuillEditor/QuillEditor";
+import { useHandleForm } from "@/hooks/useUploadImages/useUploadImages";
+import UploadImage from "@/components/Atoms/UploadImage/UploadImage";
 
 interface IAddLocationForm {
   lat: number | undefined;
@@ -52,8 +53,12 @@ function AddLocationForm({
   const [formState, dispatch] = useReducer(reducer, initialFormState);
   const [selectedAccessibilityFeatures, setSelectedAccessibilityFeatures] = useState<string[]>([]);
   const [descriptionFromEditor, setDescriptionFromEditor] = useState<string>("");
+  const [image, setImage] = useState<File | null>(null);
   const { name, description, address, postalNumber } = formState;
   const [errors, setErrors] = useState<TErrorType>({});
+
+  const { sendDataAndUploadImage, response, isLoading } = useHandleForm("thumbnail");
+
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formErrors = validateFormData(formState, lat, lng, selectedAccessibilityFeatures);
@@ -64,8 +69,13 @@ function AddLocationForm({
     if (!lat || !lng) {
       return;
     }
+    if (!image) {
+      toast("Fajl nije izabran?");
+      return;
+    }
     const payload: TCreateLocationPayload = {
       ...formState,
+      slug: name.toLowerCase().replaceAll(" ", "-").concat(`-lat-${lat}-lng-${lng}`),
       categoryId: +formState.categoryId,
       cityId: +formState.cityId,
       postalNumber: +formState.postalNumber,
@@ -74,11 +84,11 @@ function AddLocationForm({
       longitude: lng,
       accessibilityFeatureIds: selectedAccessibilityFeatures.map((featureId) => +featureId),
     };
-    console.log(payload);
-    // const { createdLocation } = await useCreateLocation(payload);
-    // dispatch({ type: FORM_ACTIONS.RESET_STATE });
-    // setSelectedAccessibilityFeatures((prev) => []);
-    // toast("Location successfully created");
+
+    sendDataAndUploadImage(image, payload);
+    dispatch({ type: FORM_ACTIONS.RESET_STATE });
+    setSelectedAccessibilityFeatures((prev) => []);
+    toast("Location successfully created");
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +111,17 @@ function AddLocationForm({
   };
   return (
     <form className="md:flex md:flex-col md:gap-3 mb-3" onSubmit={handleFormSubmit}>
+      <div className="text-xl font-bold my-3 text-blue-700">Create location</div>
+      <div>
+        <AppInput
+          name="name"
+          label="Name"
+          value={name}
+          onChange={handleInputChange}
+          type="text"
+          required
+        />
+      </div>
       <div className="md:flex md:gap-3 ">
         <div className="h-100">
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -138,7 +159,6 @@ function AddLocationForm({
           value={address}
           onChange={handleInputChange}
           type="text"
-          required
         />
         <AppSelect
           name="cityId"
@@ -158,19 +178,7 @@ function AddLocationForm({
           value={postalNumber}
           onChange={handleInputChange}
           type="number"
-          required
           errorMessage={errors.postalNumber}
-        />
-      </div>
-
-      <div>
-        <AppInput
-          name="name"
-          label="Name"
-          value={name}
-          onChange={handleInputChange}
-          type="text"
-          required
         />
       </div>
 
@@ -197,6 +205,7 @@ function AddLocationForm({
         />
       </div>
       <div>
+        <UploadImage image={image} setImage={setImage} />
         <div className="h-100">
           <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
             Description

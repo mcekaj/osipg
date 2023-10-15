@@ -12,6 +12,7 @@ export type TCreateLocationPayload = TInitialFormState & {
   latitude: number;
   longitude: number;
   accessibilityFeatureIds: number[];
+  slug:string
 };
 export interface ICreatedLocationType extends Location {
   address: string;
