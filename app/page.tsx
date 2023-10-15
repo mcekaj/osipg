@@ -9,6 +9,9 @@ import ArtgrafikaIcon from "@/styles/assets/artgrafika.png";
 import MarkerIcon from "@/styles/assets/marker.png";
 import Image from "next/image";
 import useGetCities from "@/hooks/useGetCities/useGetCities";
+import AppSwiper from "@/components/Molecules/Swiper/AppSwiper";
+import SwiperCard from "@/components/Atoms/Card/SwiperCard";
+import useGetNews from "@/hooks/useGetNews/useGetNews";
 
 export default async function Home() {
   const { locations } = await useGetLocations({
@@ -22,10 +25,48 @@ export default async function Home() {
   const { categories } = await useGetCategories();
   const { accessibilityFeatures } = await useGetAccessibilityFeatures();
   const { cities } = await useGetCities();
+  const { news } = await useGetNews();
 
   if (!locations) {
     return null;
   }
+  const swiperContent = [
+    {
+      name: "hello",
+      description:
+        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
+    },
+    {
+      name: "hello",
+      description:
+        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
+    },
+    {
+      name: "hello",
+      description:
+        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
+    },
+    {
+      name: "hello",
+      description:
+        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
+    },
+    {
+      name: "hello",
+      description:
+        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
+    },
+    {
+      name: "hello",
+      description:
+        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
+    },
+    {
+      name: "hello",
+      description:
+        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
+    },
+  ];
   return (
     <div>
       <MapLocator
@@ -44,6 +85,11 @@ export default async function Home() {
           <Image src={MarkerIcon} alt="artgrafika" height={60} width={150} />
         </div>
       </div>
+      <AppSwiper
+        swiperContent={swiperContent.map((item) => (
+          <SwiperCard linkHref="/" linkTitle="Some title" title={item.name} />
+        ))}
+      />
     </div>
   );
 }

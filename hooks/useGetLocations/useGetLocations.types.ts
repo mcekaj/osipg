@@ -2,8 +2,11 @@ export interface Location {
   id: number;
   name: string;
   description: string;
+  slug: string;
   latitude: number;
   longitude: number;
+  address: string;
+  postalNumber: number;
   category: {
     id: number;
     name: string;
@@ -13,6 +16,7 @@ export interface Location {
     {
       id: number;
       name: string;
+      relativeUrl: string;
     },
   ];
 }
