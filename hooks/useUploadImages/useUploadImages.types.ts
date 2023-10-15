@@ -1,10 +1,12 @@
-type UseFileUploadReturn = {
-  uploadFile: (file: File) => Promise<void>;
+import { TCreateLocationPayload } from "@/components/Molecules/AddLocationForm/AddLocationForm.types";
+
+export type UseFileUploadReturn = {
+  sendDataAndUploadImage: (file: File, payload: TCreateLocationPayload) => Promise<void>;
   response: UploadResponse;
   isLoading: boolean;
 };
 
-type UploadResponse = {
+export type UploadResponse = {
   data?: any;
   error?: string;
 };

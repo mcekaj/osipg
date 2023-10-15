@@ -1,26 +1,18 @@
 "use client";
-import { useState } from "react";
-import { useUploadImages } from "@/hooks/useUploadImages/useUploadImages";
-import AppButton from "../AppButton/AppButton";
-import { toast } from "react-toastify";
+import { SetStateAction} from "react";
 
-const UploadImage = ({ endpoint, imageKey }: { endpoint: string; imageKey: string }) => {
-  const [image, setImage] = useState<File | null>(null);
-  const { uploadFile, response, isLoading } = useUploadImages(endpoint, imageKey);
-
+const UploadImage = ({
+  image,
+  setImage,
+}: {
+  image: File | null;
+  setImage: React.Dispatch<SetStateAction<File | null>>;
+}) => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setImage(event.target.files[0]);
     } else {
       setImage(null);
-    }
-  };
-
-  const submitFile = async () => {
-    if (image) {
-      uploadFile(image);
-    } else {
-      toast("Fajl nije izabran?");
     }
   };
 
@@ -39,10 +31,8 @@ const UploadImage = ({ endpoint, imageKey }: { endpoint: string; imageKey: strin
         type="file"
         onChange={(event) => handleImageChange(event)}
       />
-      <br></br>
-      <AppButton onClick={submitFile}>Submit</AppButton>
 
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">
+      <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 mb-3" id="file_input_help">
         SVG, PNG, JPG or GIF (MAX. 800x400px).
       </p>
     </div>
