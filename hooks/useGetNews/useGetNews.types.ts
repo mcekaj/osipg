@@ -7,6 +7,7 @@ export interface Tag {
 export interface News {
   id: number;
   title: string;
+  content: string | TrustedHTML;
   slug: string;
   imageRelativeUri: string;
   createdAt: string;

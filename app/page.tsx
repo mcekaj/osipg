@@ -1,4 +1,3 @@
-import MapLocator from "@/components/Organisms/MapLocator/MapLocator";
 import useGetAccessibilityFeatures from "@/hooks/useGetAccessibilityFeatures/useGetAccessibilityFeatures";
 import useGetCategories from "@/hooks/useGetCategories/useGetCategories";
 import useGetLocations from "@/hooks/useGetLocations/useGetLocations";
@@ -12,7 +11,12 @@ import useGetCities from "@/hooks/useGetCities/useGetCities";
 import AppSwiper from "@/components/Molecules/Swiper/AppSwiper";
 import SwiperCard from "@/components/Atoms/Card/SwiperCard";
 import useGetNews from "@/hooks/useGetNews/useGetNews";
+import dynamic from "next/dynamic";
 
+const MapLocator = dynamic(() => import("@/components/Organisms/MapLocator/MapLocator"), {
+  loading: () => <p>Loading map...</p>,
+  ssr: false,
+});
 export default async function Home() {
   const { locations } = await useGetLocations({
     locationParams: {
@@ -30,43 +34,7 @@ export default async function Home() {
   if (!locations) {
     return null;
   }
-  const swiperContent = [
-    {
-      name: "hello",
-      description:
-        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
-    },
-    {
-      name: "hello",
-      description:
-        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
-    },
-    {
-      name: "hello",
-      description:
-        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
-    },
-    {
-      name: "hello",
-      description:
-        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
-    },
-    {
-      name: "hello",
-      description:
-        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
-    },
-    {
-      name: "hello",
-      description:
-        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
-    },
-    {
-      name: "hello",
-      description:
-        "Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum",
-    },
-  ];
+
   return (
     <div>
       <MapLocator
@@ -86,8 +54,12 @@ export default async function Home() {
         </div>
       </div>
       <AppSwiper
-        swiperContent={swiperContent.map((item) => (
-          <SwiperCard linkHref="/" linkTitle="Some title" title={item.name} />
+        swiperContent={news.map((item) => (
+          <SwiperCard
+            linkHref={`vijesti/${item.slug}`}
+            linkTitle="Procitaj vise"
+            title={item.title}
+          />
         ))}
       />
     </div>
