@@ -17,8 +17,8 @@ const Page = async ({
   if (!location) return null;
 
   return (
-    <div>
-      <div className="flex my-10">
+    <div className="max-w-7xl mx-auto">
+      <div className="flex my-10 gap-10">
         <div className="flex flex-col gap-3 w-1/3">
           <h1 className="text-2xl">
             {location.name} {location.address}
@@ -42,19 +42,20 @@ const Page = async ({
             </div>
             <div className="flex items-center gap-5">
               <ContactIcon />
-              <p>{location.postalNumber}</p>
+              <p>{location.phone}</p>
             </div>
             <div className="flex items-center gap-5">
               <Mailicon />
-              <p>{location.address}</p>
+              <p>{location.email}</p>
             </div>
           </div>
         </div>
-        <div className="w-2/3">
+        <div className="w-2/3 ">
           <SingleMapLocator
             style={{
               height: 500,
               width: "100%",
+              borderRadius: 10,
             }}
             options={{
               icon: {
@@ -68,7 +69,13 @@ const Page = async ({
           />
         </div>
       </div>
-      <p className="text-center">{location.description}</p>
+      <div className="my-10">
+        <img
+          src={`${process.env.NEXT_PUBLIC_BASE_URL}/${location.thumbnailUrl}`}
+          className="h-96 mx-auto"
+        />
+      </div>
+      <div dangerouslySetInnerHTML={{ __html: location.description }} />
     </div>
   );
 };

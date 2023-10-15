@@ -4,7 +4,11 @@ export const routes = [
     path: "/",
   },
   {
-    name: "Udrženja",
+    name: "Vijesti",
+    path: "/vijesti",
+  },
+  {
+    name: "Udruženja",
     path: "/udruzenja",
   },
   {

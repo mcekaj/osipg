@@ -252,7 +252,9 @@ function MapLocator({
                         <div className="flex flex-col gap-3 lg:flex-row items-center">
                           <div>
                             <img
-                              src={`${process.env.NEXT_PUBLIC_BASE_URL}/${loc.category.relativeUrl}`}
+                              width={200}
+                              height={100}
+                              src={`${process.env.NEXT_PUBLIC_BASE_URL}/${loc.thumbnailUrl}`}
                               alt={loc.category.name}
                             />
                           </div>
@@ -261,7 +263,6 @@ function MapLocator({
                               <strong>{loc.name}</strong>
                             </h3>
                             <h3 className="text-gray-700 text-lg">{loc.address}</h3>
-                            <p>{loc.description}</p>
                             <Link href={`objekti/${loc.slug}`}>
                               <AppButton variant="outlined" fullWidth>
                                 Opširnije

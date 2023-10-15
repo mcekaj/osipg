@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { SwiperCardProps } from "./SwiperCard.types";
+import { twMerge } from "tailwind-merge";
 
-const SwiperCard = ({ linkHref, linkTitle, title, bgImage }: SwiperCardProps) => {
+const SwiperCard = ({ linkHref, linkTitle, title, bgImage, className }: SwiperCardProps) => {
   return (
     <div
-      className="flex items-end justify-start rounded-md h-64 w-full p-5"
+      className={twMerge(`flex items-end justify-start rounded-md h-64 w-full p-5 ${className}`)}
       style={{
         backgroundImage: `url(${bgImage})`,
         backgroundRepeat: "no-repeat",

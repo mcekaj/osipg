@@ -18,8 +18,8 @@ const Contact = () => {
               width: "50%",
             }}
             position={{
-              lat: 41.22,
-              lng: 45.22,
+              lat: 42.44158353919331,
+              lng: 19.254500037648,
             }}
             options={{}}
           />

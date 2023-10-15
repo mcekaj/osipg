@@ -29,10 +29,17 @@ const SingleMapLocator = ({
 
     // Fit the map to the calculated bounds
     map.fitBounds(bounds);
+    map.setZoom(2);
   }, []);
   if (!isLoaded) return null;
   return (
-    <GoogleMap onLoad={onLoad} mapContainerStyle={style}>
+    <GoogleMap
+      onLoad={onLoad}
+      options={{
+        maxZoom: 15,
+      }}
+      mapContainerStyle={style}
+    >
       <div>
         <MarkerF options={options} position={position} />
       </div>

@@ -3,4 +3,5 @@ export interface SwiperCardProps {
   linkHref: string;
   linkTitle: string;
   bgImage: string;
+  className?: string;
 }

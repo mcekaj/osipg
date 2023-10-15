@@ -19,6 +19,10 @@ export interface Location {
       relativeUrl: string;
     },
   ];
+  images: [];
+  thumbnailUrl: string;
+  email: string;
+  phone: string;
 }
 export interface UseGetLocationsProps {
   name: string | null;
