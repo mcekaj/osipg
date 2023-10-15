@@ -76,7 +76,7 @@ function AddLocationForm({
     }
     const payload: TCreateLocationPayload = {
       ...formState,
-      slug: "asdasdasd",
+      slug: name.toLowerCase().replaceAll(" ", "-").concat(`-lat-${lat}-lng-${lng}`),
       categoryId: +formState.categoryId,
       cityId: +formState.cityId,
       postalNumber: +formState.postalNumber,
@@ -149,7 +149,6 @@ function AddLocationForm({
           value={address}
           onChange={handleInputChange}
           type="text"
-          required
         />
         <AppSelect
           name="cityId"
@@ -169,7 +168,6 @@ function AddLocationForm({
           value={postalNumber}
           onChange={handleInputChange}
           type="number"
-          required
           errorMessage={errors.postalNumber}
         />
       </div>
